@@ -1,0 +1,13 @@
+[package]
+name = "c-rgb"
+version = "0.1.0"
+authors = ["Alekos Filini <alekos.filini@gmail.com>"]
+
+[dependencies]
+bitcoin = "~0.14.2"
+rgb = { git = "https://github.com/rgb-org/rgb.git", rev = "dd51ef945b778ac0d1f010232ec3a8394c4142cd" }
+libc = "~0.2.45"
+
+[lib]
+name = "rgb"
+crate-type = ["staticlib", "cdylib"]
