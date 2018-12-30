@@ -1,4 +1,5 @@
 use bitcoin::Address;
+use bitcoin::Transaction;
 use bitcoin::util::hash::Sha256dHash;
 use c_bitcoin::CRgbBitcoinNetwork;
 use c_bitcoin::CRgbOutPoint;
@@ -6,7 +7,9 @@ use CRgbNeededTx;
 use generics::WrapperOf;
 use libc;
 use rgb::contract::Contract;
+use rgb::traits::NeededTx;
 use rgb::traits::Verify;
+use std::collections::HashMap;
 use std::ffi::CStr;
 use std::ffi::CString;
 use std::os::raw::*;
@@ -76,7 +79,7 @@ pub extern "C" fn rgb_contract_get_needed_txs(contract: &CRgbContract, needed_tx
         .collect();
 
     *needed_txs = needed_txs_vec
-        .into_boxed_slice();
+        .into_boxed_slice(); // TODO: mem::forget what's inside needed_txs originally
 
     needed_txs_native.len() as u32
 }
@@ -113,12 +116,10 @@ pub extern "C" fn rgb_contract_serialize(contract: &CRgbContract, buffer: &mut B
     let size = encoded.len();
 
     *buffer = encoded
-        .into_boxed_slice();
+        .into_boxed_slice(); // TODO: mem::forget what's inside buffer originally
 
     size as u32
 }
-
-// TODO: properly handle results
 
 #[no_mangle]
 pub extern "C" fn rgb_contract_deserialize(buffer: *const c_uchar, len: u32, contract: &mut CRgbContract) {
@@ -130,4 +131,20 @@ pub extern "C" fn rgb_contract_deserialize(buffer: *const c_uchar, len: u32, con
 
     let native_contract = deserialize(&encoded).unwrap();
     *contract = CRgbContract::encode(&native_contract);
+}
+
+#[no_mangle]
+pub extern "C" fn rgb_contract_verify(contract: &CRgbContract, crgb_needed_txs: &HashMap<NeededTx, Transaction>) -> u8 {
+    let mut usable_map = HashMap::new();
+
+    // little hack: verify() wants a HashMap<&NeededTx, Transaction>
+    //                                      ^^^
+    for (key, val) in crgb_needed_txs {
+        usable_map.insert(key, val.clone());
+    }
+
+    match contract.decode().verify(&usable_map) {
+        true => 1,
+        false => 0
+    }
 }

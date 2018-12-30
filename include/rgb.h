@@ -11,6 +11,9 @@ struct rgb_sha256d {
     uint8_t val[32];
 };
 
+struct rgb_needed_tx_map {
+};
+
 struct rgb_bitcoin_outpoint {
     struct rgb_sha256d txid;
     uint32_t vout;
@@ -33,6 +36,11 @@ struct rgb_output_entry {
     uint32_t vout;
 };
 
+struct rgb_bitcoin_serialized_tx {
+    uint32_t size;
+    uint8_t *payload;
+};
+
 // Contracts
 
 struct rgb_contract {
@@ -53,6 +61,13 @@ uint32_t rgb_contract_serialize(const struct rgb_contract *contract, uint8_t **b
 
 void rgb_contract_deserialize(const uint8_t *buffer, uint32_t len, struct rgb_contract *contract);
 
+uint8_t rgb_contract_verify(const struct rgb_contract *contract, const struct rgb_needed_tx_map *map);
+
+void rgb_init_needed_tx_map(struct rgb_needed_tx_map **map);
+
+void rgb_push_needed_tx_map(struct rgb_needed_tx_map *map, const struct rgb_needed_tx *key,
+                            const struct rgb_bitcoin_serialized_tx *val);
+
 // Debug functions
 
 void rgb_debug_sha256d(const struct rgb_sha256d *hash);
@@ -60,3 +75,7 @@ void rgb_debug_sha256d(const struct rgb_sha256d *hash);
 void rgb_debug_print_contract(const struct rgb_contract *contract);
 
 void rgb_debug_print_needed_tx(const struct rgb_needed_tx *e);
+
+void rgb_debug_print_serialized_tx(const struct rgb_bitcoin_serialized_tx *tx);
+
+void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
