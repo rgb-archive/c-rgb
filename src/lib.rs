@@ -9,12 +9,14 @@ use bitcoin::util::hash::Sha256dHash;
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
 use generics::WrapperOf;
+use proof::CRgbProof;
 use rgb::traits::NeededTx;
 use std::slice;
 
 pub mod generics;
 pub mod c_bitcoin;
 pub mod contract;
+pub mod proof;
 pub mod needed_txs_map;
 
 #[derive(Debug)]
@@ -84,4 +86,9 @@ pub extern "C" fn rgb_debug_print_needed_tx(e: &CRgbNeededTx) {
 #[no_mangle]
 pub extern "C" fn rgb_debug_print_serialized_tx(tx: &CRgbSerializedTx) {
     println!("{:#?}", tx.decode());
+}
+
+#[no_mangle]
+pub extern "C" fn rgb_debug_print_proof(proof: &CRgbProof) {
+    println!("{:#?}", proof.decode());
 }
