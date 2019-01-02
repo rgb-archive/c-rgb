@@ -1,3 +1,6 @@
+#ifndef RGBORG_RGB_H
+#define RGBORG_RGB_H
+
 #include <stdint.h>
 
 static const uint32_t RGB_NETWORK_MAINNET = 0;
@@ -110,3 +113,5 @@ void rgb_debug_print_serialized_tx(const struct rgb_bitcoin_serialized_tx *tx);
 void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
 
 void rgb_debug_print_proof(const struct rgb_proof *proof);
+
+#endif
