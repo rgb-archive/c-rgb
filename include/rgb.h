@@ -10,6 +10,9 @@ static const uint32_t RGB_NETWORK_REGTEST = 2;
 static const uint32_t RGB_NEEDED_TX_TXID = 0;
 static const uint32_t RGB_NEEDED_TX_SPENDS_OUTPOINT = 1;
 
+// Use this as a vout in an OutputEntry to burn that output
+static const uint32_t RGB_BURN_ASSET = 0xFFFFFFFF;
+
 struct rgb_sha256d {
     uint8_t val[32];
 };

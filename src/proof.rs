@@ -1,17 +1,18 @@
-use bitcoin::BitcoinHash;
-use bitcoin::util::hash::Sha256dHash;
-use c_bitcoin::CRgbOutPoint;
-use contract::CRgbContract;
-use CRgbNeededTx;
-use generics::WrapperOf;
-use rgb::contract::Contract;
-use rgb::proof::OutputEntry;
-use rgb::proof::Proof;
-use rgb::traits::Verify;
 use std::mem;
 use std::os::raw::c_uchar;
 use std::ptr;
 use std::slice;
+
+use bitcoin::util::hash::Sha256dHash;
+use rgb::contract::Contract;
+use rgb::output_entry::OutputEntry;
+use rgb::proof::Proof;
+use rgb::traits::Verify;
+
+use c_bitcoin::CRgbOutPoint;
+use contract::CRgbContract;
+use CRgbNeededTx;
+use generics::WrapperOf;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -23,14 +24,24 @@ pub struct CRgbOutputEntry {
 
 impl WrapperOf<OutputEntry> for CRgbOutputEntry {
     fn decode(&self) -> OutputEntry {
-        OutputEntry::new(self.asset_id.clone(), self.amount, self.vout)
+        let vout = match self.vout {
+            0xFFFFFFFF => None,
+            x => Some(x)
+        };
+
+        OutputEntry::new(self.asset_id.clone(), self.amount, vout)
     }
 
     fn encode(native: &OutputEntry) -> Self {
+        let vout = match native.get_vout() {
+            Some(val) => val,
+            None => 0xFFFFFFFF
+        };
+
         CRgbOutputEntry {
             asset_id: native.get_asset_id(),
             amount: native.get_amount(),
-            vout: native.get_vout(),
+            vout
         }
     }
 }
