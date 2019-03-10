@@ -1,20 +1,20 @@
-use bitcoin::Address;
-use bitcoin::Transaction;
-use bitcoin::util::hash::Sha256dHash;
-use c_bitcoin::CRgbBitcoinNetwork;
-use c_bitcoin::CRgbOutPoint;
-use CRgbNeededTx;
-use generics::WrapperOf;
-use libc;
-use rgb::contract::Contract;
-use rgb::traits::NeededTx;
-use rgb::traits::Verify;
 use std::collections::HashMap;
 use std::ffi::CStr;
 use std::ffi::CString;
 use std::os::raw::*;
 use std::slice;
-use std::str::FromStr;
+
+use bitcoin::Transaction;
+use bitcoin::util::hash::Sha256dHash;
+use libc;
+use rgb::contract::Contract;
+use rgb::traits::NeededTx;
+use rgb::traits::Verify;
+
+use c_bitcoin::CRgbBitcoinNetwork;
+use c_bitcoin::CRgbOutPoint;
+use CRgbNeededTx;
+use generics::WrapperOf;
 
 //#[derive(Debug)]
 #[repr(C)]
@@ -28,9 +28,6 @@ pub struct CRgbContract {
 
 impl WrapperOf<Contract> for CRgbContract {
     fn decode(&self) -> Contract {
-        let dummy_addrstr = "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4"; // TODO: this will be removed with PR#7
-        let dummy_addr = Address::from_str(dummy_addrstr).unwrap();
-
         let cstr = unsafe { CStr::from_ptr(&self.title[0] as *const c_char) };
 
         Contract {
@@ -38,9 +35,7 @@ impl WrapperOf<Contract> for CRgbContract {
             issuance_utxo: self.issuance_utxo.decode(),
             initial_owner_utxo: self.initial_owner_utxo.decode(),
             network: self.network.decode(),
-            total_supply: self.total_supply,
-
-            burn_address: dummy_addr,
+            total_supply: self.total_supply
         }
     }
 
