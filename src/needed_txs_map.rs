@@ -1,16 +1,17 @@
+use std::collections::HashMap;
+
 use bitcoin::Transaction;
-use CRgbNeededTx;
+use rgb::traits::NeededTx;
+
+use ::{CRgbAllocatedBox, CRgbNeededTx};
 use CRgbSerializedTx;
 use generics::WrapperOf;
-use rgb::traits::NeededTx;
-use std::collections::HashMap;
-use std::mem;
 
 #[no_mangle]
-pub extern "C" fn rgb_init_needed_tx_map(map: &mut Box<HashMap<NeededTx, Transaction>>) {
-    let mut new_map = Box::new(HashMap::new());
-    mem::swap(&mut new_map, &mut *map);
-    mem::forget(new_map);
+pub extern "C" fn rgb_init_needed_tx_map() -> CRgbAllocatedBox<HashMap<NeededTx, Transaction>> {
+    CRgbAllocatedBox {
+        ptr: vec![HashMap::new()].into_boxed_slice()
+    }
 }
 
 #[no_mangle]

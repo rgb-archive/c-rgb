@@ -9,9 +9,9 @@ use rgb::output_entry::OutputEntry;
 use rgb::proof::Proof;
 use rgb::traits::Verify;
 
+use ::{CRgbAllocatedBox, CRgbNeededTx};
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
-use CRgbNeededTx;
 use generics::WrapperOf;
 
 #[derive(Debug)]
@@ -158,38 +158,20 @@ pub extern "C" fn rgb_proof_is_root_proof(proof: &CRgbProof) -> u8 {
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_get_needed_txs(proof: &CRgbProof, needed_txs: &mut Box<[CRgbNeededTx]>) -> u32 {
+pub extern "C" fn rgb_proof_get_needed_txs(proof: &CRgbProof) -> CRgbAllocatedBox<CRgbNeededTx> {
     let needed_txs_native = proof.decode().get_needed_txs();
     let needed_txs_vec: Vec<CRgbNeededTx> = needed_txs_native
         .iter()
         .map(|ref x| CRgbNeededTx::encode(x))
         .collect();
 
-    /* A little recap of what's going on here:
-     *
-     * The reason why we can't directly assign *needed_txs = vec.into_boxed_slice() is that
-     * Rust would first try to de-allocate what's inside needed_txs by calling drop() on it.
-     * Since we have no control over what's coming from the C side, and it's very likely that
-     * needed_txs is an uninitialized variable, this would make Rust panic.
-     *
-     * The solution here is to use mem::swap, which does not call drop on either of the elements
-     * being swapped. Then we mem::forget the uninitialized pointer, so that Rust will not try to
-     * drop it once it gets out of scope.
-     *
-     * So we create a "dummy" object (which actually contains our data). We swap the pointer coming
-     * from the C side with our dummy array (so now the uninitialized pointer is in `dummy`) and
-     * finally we forget dummy.
-     */
-
-    let mut dummy = needed_txs_vec.into_boxed_slice();
-    mem::swap(&mut dummy, &mut *needed_txs);
-    mem::forget(dummy);
-
-    needed_txs_native.len() as u32
+    CRgbAllocatedBox {
+        ptr: needed_txs_vec.into_boxed_slice()
+    }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof, buffer: &mut Box<[u8]>) -> u32 {
+pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof) -> CRgbAllocatedBox<u8> {
     use bitcoin::network::serialize::serialize;
 
     let script = proof.decode().get_expected_script();
@@ -203,43 +185,24 @@ pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof, buffer: &mut 
        field will remain */
     encoded.remove(0);
 
-    let size = encoded.len();
-
-    // Same swap trick described above in `rgb_proof_get_needed_txs`
-    let mut dummy = encoded.into_boxed_slice();
-    mem::swap(&mut dummy, &mut *buffer);
-    mem::forget(dummy);
-
-    size as u32
+    CRgbAllocatedBox {
+        ptr: encoded.into_boxed_slice()
+    }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_get_serialized_size(proof: &CRgbProof) -> u32 {
+pub extern "C" fn rgb_proof_serialize(proof: &CRgbProof) -> CRgbAllocatedBox<u8> {
     use bitcoin::network::serialize::serialize;
 
     let encoded: Vec<u8> = serialize(&proof.decode()).unwrap();
 
-    encoded.len() as u32
+    CRgbAllocatedBox {
+        ptr: encoded.into_boxed_slice()
+    }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_serialize(proof: &CRgbProof, buffer: &mut Box<[u8]>) -> u32 {
-    use bitcoin::network::serialize::serialize;
-
-    let encoded: Vec<u8> = serialize(&proof.decode()).unwrap();
-
-    let size = encoded.len();
-
-    // Same swap trick described above in `rgb_proof_get_needed_txs`
-    let mut dummy = encoded.into_boxed_slice();
-    mem::swap(&mut dummy, &mut *buffer);
-    mem::forget(dummy);
-
-    size as u32
-}
-
-#[no_mangle]
-pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32, proof: &mut CRgbProof) {
+pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRgbAllocatedBox<CRgbProof> {
     use bitcoin::network::serialize::deserialize;
 
     let sized_slice = unsafe { slice::from_raw_parts(buffer, len as usize) };
@@ -247,8 +210,7 @@ pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32, proof:
 
     let native_proof = deserialize(&encoded).unwrap();
 
-    // Same swap trick described above in `rgb_proof_get_needed_txs`
-    let mut dummy = CRgbProof::encode(&native_proof);
-    mem::swap(&mut dummy, &mut *proof);
-    mem::forget(dummy);
+    CRgbAllocatedBox {
+        ptr: vec![CRgbProof::encode(&native_proof)].into_boxed_slice()
+    }
 }

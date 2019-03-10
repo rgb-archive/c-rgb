@@ -26,11 +26,10 @@ int main() {
             .total_supply = 1000
     };
 
-    struct rgb_sha256d asset_id;
-    rgb_contract_get_asset_id(&contract, &asset_id);
+    struct rgb_sha256d *asset_id = rgb_as_ptr(rgb_contract_get_asset_id(&contract));
 
     struct rgb_output_entry entry = {
-            .asset_id = asset_id,
+            .asset_id = *asset_id,
             .amount = contract.total_supply,
             .vout = 0
     };
@@ -47,21 +46,15 @@ int main() {
 
     rgb_debug_print_proof(&proof);
 
-    uint32_t size = rgb_proof_get_serialized_size(&proof);
-
-    uint8_t *buffer = malloc(size);
-    uint32_t size_2 = rgb_proof_serialize(&proof, &buffer);
-
-    assert(size == size_2);
+    struct rgb_allocated_uint8_t serialized_proof = rgb_proof_serialize(&proof);
 
     printf("Proof (hex): ");
-    print_hex(buffer, size);
+    print_hex(serialized_proof.ptr, serialized_proof.size);
 
-    struct rgb_proof deserialized_proof;
+    struct rgb_proof *deserialized_proof = rgb_as_ptr(
+            rgb_proof_deserialize(serialized_proof.ptr, serialized_proof.size));
 
-    rgb_proof_deserialize(buffer, size, &deserialized_proof);
-
-    rgb_debug_print_proof(&deserialized_proof);
+    rgb_debug_print_proof(deserialized_proof);
 
     return EXIT_SUCCESS;
 }

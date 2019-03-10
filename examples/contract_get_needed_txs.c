@@ -31,24 +31,23 @@ int main() {
     rgb_debug_print_contract(&contract);
 
     // TODO: needed_txs should be freed
-    struct rgb_needed_tx *needed_txs = NULL;
-    uint32_t len = rgb_contract_get_needed_txs(&contract, &needed_txs);
+    struct rgb_allocated_rgb_needed_tx needed_txs = rgb_contract_get_needed_txs(&contract);
 
-    printf("Number of elements: %u\n", len);
+    printf("Number of elements: %lu\n", needed_txs.len);
 
-    for (size_t i = 0; i < len; ++i) {
-        if (needed_txs[i].type == RGB_NEEDED_TX_TXID) {
+    for (size_t i = 0; i < needed_txs.len; ++i) {
+        if (needed_txs.ptr[i].type == RGB_NEEDED_TX_TXID) {
             printf("FromTXID(\n\ttxid: ");
-            print_hex((void *) &needed_txs[i].txid, 32);
+            print_hex((void *) &needed_txs.ptr[i].txid, 32);
             printf("\n)\n");
 
-        } else if (needed_txs[i].type == RGB_NEEDED_TX_SPENDS_OUTPOINT) {
+        } else if (needed_txs.ptr[i].type == RGB_NEEDED_TX_SPENDS_OUTPOINT) {
             printf("WhichSpendsOutPoint(\n\ttxid: ");
-            print_hex((void *) &needed_txs[i].outpoint.txid, 32);
-            printf("\n\tvout: %u\n)\n", needed_txs[i].outpoint.vout);
+            print_hex((void *) &needed_txs.ptr[i].outpoint.txid, 32);
+            printf("\n\tvout: %u\n)\n", needed_txs.ptr[i].outpoint.vout);
 
         } else {
-            fprintf(stderr, "Unknown NeededTx type %u. Exiting now.\n", needed_txs->type);
+            fprintf(stderr, "Unknown NeededTx type %u. Exiting now.\n", needed_txs.ptr[i].type);
 
             return EXIT_FAILURE;
         }

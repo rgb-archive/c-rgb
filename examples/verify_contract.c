@@ -57,9 +57,7 @@ int main() {
 
     decode_hex(hex, tx.payload, sizeof(hex) / 2);
 
-    struct rgb_needed_tx_map *map;
-
-    rgb_init_needed_tx_map(&map);
+    struct rgb_needed_tx_map *map = rgb_as_ptr(rgb_init_needed_tx_map());
     rgb_push_needed_tx_map(map, &need, &tx);
 
     // The check will fail with "invalid commitment"
