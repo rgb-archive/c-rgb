@@ -9,7 +9,7 @@ use rgb::output_entry::OutputEntry;
 use rgb::proof::Proof;
 use rgb::traits::Verify;
 
-use ::{CRgbAllocatedBox, CRgbNeededTx};
+use ::{CRgbAllocatedArray, CRgbNeededTx};
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
 use generics::WrapperOf;
@@ -158,20 +158,20 @@ pub extern "C" fn rgb_proof_is_root_proof(proof: &CRgbProof) -> u8 {
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_get_needed_txs(proof: &CRgbProof) -> CRgbAllocatedBox<CRgbNeededTx> {
+pub extern "C" fn rgb_proof_get_needed_txs(proof: &CRgbProof) -> CRgbAllocatedArray<CRgbNeededTx> {
     let needed_txs_native = proof.decode().get_needed_txs();
     let needed_txs_vec: Vec<CRgbNeededTx> = needed_txs_native
         .iter()
         .map(|ref x| CRgbNeededTx::encode(x))
         .collect();
 
-    CRgbAllocatedBox {
+    CRgbAllocatedArray {
         ptr: needed_txs_vec.into_boxed_slice()
     }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof) -> CRgbAllocatedBox<u8> {
+pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof) -> CRgbAllocatedArray<u8> {
     use bitcoin::network::serialize::serialize;
 
     let script = proof.decode().get_expected_script();
@@ -185,24 +185,24 @@ pub extern "C" fn rgb_proof_get_expected_script(proof: &CRgbProof) -> CRgbAlloca
        field will remain */
     encoded.remove(0);
 
-    CRgbAllocatedBox {
+    CRgbAllocatedArray {
         ptr: encoded.into_boxed_slice()
     }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_serialize(proof: &CRgbProof) -> CRgbAllocatedBox<u8> {
+pub extern "C" fn rgb_proof_serialize(proof: &CRgbProof) -> CRgbAllocatedArray<u8> {
     use bitcoin::network::serialize::serialize;
 
     let encoded: Vec<u8> = serialize(&proof.decode()).unwrap();
 
-    CRgbAllocatedBox {
+    CRgbAllocatedArray {
         ptr: encoded.into_boxed_slice()
     }
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRgbAllocatedBox<CRgbProof> {
+pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRgbAllocatedArray<CRgbProof> {
     use bitcoin::network::serialize::deserialize;
 
     let sized_slice = unsafe { slice::from_raw_parts(buffer, len as usize) };
@@ -210,7 +210,7 @@ pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRg
 
     let native_proof = deserialize(&encoded).unwrap();
 
-    CRgbAllocatedBox {
+    CRgbAllocatedArray {
         ptr: vec![CRgbProof::encode(&native_proof)].into_boxed_slice()
     }
 }

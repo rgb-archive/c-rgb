@@ -46,7 +46,7 @@ int main() {
 
     rgb_debug_print_proof(&proof);
 
-    struct rgb_allocated_uint8_t serialized_proof = rgb_proof_serialize(&proof);
+    struct rgb_allocated_array_uint8_t serialized_proof = rgb_proof_serialize(&proof);
 
     printf("Proof (hex): ");
     print_hex(serialized_proof.ptr, serialized_proof.size);

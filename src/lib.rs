@@ -23,7 +23,7 @@ pub mod needed_txs_map;
 
 #[derive(Debug)]
 #[repr(C)]
-pub struct CRgbAllocatedBox<T> {
+pub struct CRgbAllocatedArray<T> {
     pub ptr: Box<[T]>,
 }
 

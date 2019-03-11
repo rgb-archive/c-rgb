@@ -31,7 +31,7 @@ int main() {
     rgb_debug_print_contract(&contract);
 
     // TODO: needed_txs should be freed
-    struct rgb_allocated_rgb_needed_tx needed_txs = rgb_contract_get_needed_txs(&contract);
+    struct rgb_allocated_array_rgb_needed_tx needed_txs = rgb_contract_get_needed_txs(&contract);
 
     printf("Number of elements: %lu\n", needed_txs.len);
 

@@ -44,7 +44,7 @@ int main() {
     printf("\n");
 
     // Let's ask Rust for the commitment script
-    struct rgb_allocated_uint8_t script = rgb_contract_get_expected_script(&contract);
+    struct rgb_allocated_array_uint8_t script = rgb_contract_get_expected_script(&contract);
 
     printf("Expected commitment output: ");
     print_hex((const void *) script.ptr, script.size);
@@ -52,7 +52,7 @@ int main() {
     printf("\n");
 
     // And now we serialize it
-    struct rgb_allocated_uint8_t serialized_contract = rgb_contract_serialize(&contract);
+    struct rgb_allocated_array_uint8_t serialized_contract = rgb_contract_serialize(&contract);
 
     printf("Serialized contract: ");
     print_hex((const void *) serialized_contract.ptr, serialized_contract.size);

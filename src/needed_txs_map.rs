@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use bitcoin::Transaction;
 use rgb::traits::NeededTx;
 
-use ::{CRgbAllocatedBox, CRgbNeededTx};
+use ::{CRgbAllocatedArray, CRgbNeededTx};
 use CRgbSerializedTx;
 use generics::WrapperOf;
 
 #[no_mangle]
-pub extern "C" fn rgb_init_needed_tx_map() -> CRgbAllocatedBox<HashMap<NeededTx, Transaction>> {
-    CRgbAllocatedBox {
+pub extern "C" fn rgb_init_needed_tx_map() -> CRgbAllocatedArray<HashMap<NeededTx, Transaction>> {
+    CRgbAllocatedArray {
         ptr: vec![HashMap::new()].into_boxed_slice()
     }
 }
