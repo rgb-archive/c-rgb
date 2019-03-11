@@ -12,6 +12,7 @@ use rgb::traits::Verify;
 use ::{CRgbAllocatedArray, CRgbNeededTx};
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
+use CRgbAllocatedPtr;
 use generics::WrapperOf;
 
 #[derive(Debug)]
@@ -202,7 +203,7 @@ pub extern "C" fn rgb_proof_serialize(proof: &CRgbProof) -> CRgbAllocatedArray<u
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRgbAllocatedArray<CRgbProof> {
+pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRgbAllocatedPtr<CRgbProof> {
     use bitcoin::network::serialize::deserialize;
 
     let sized_slice = unsafe { slice::from_raw_parts(buffer, len as usize) };
@@ -210,7 +211,7 @@ pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRg
 
     let native_proof = deserialize(&encoded).unwrap();
 
-    CRgbAllocatedArray {
-        ptr: vec![CRgbProof::encode(&native_proof)].into_boxed_slice()
+    CRgbAllocatedPtr {
+        ptr: Box::new([CRgbProof::encode(&native_proof)])
     }
 }

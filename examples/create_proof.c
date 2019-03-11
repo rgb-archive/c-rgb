@@ -26,7 +26,7 @@ int main() {
             .total_supply = 1000
     };
 
-    struct rgb_sha256d *asset_id = rgb_as_ptr(rgb_contract_get_asset_id(&contract));
+    struct rgb_sha256d *asset_id = rgb_contract_get_asset_id(&contract);
 
     struct rgb_output_entry entry = {
             .asset_id = *asset_id,
@@ -51,8 +51,7 @@ int main() {
     printf("Proof (hex): ");
     print_hex(serialized_proof.ptr, serialized_proof.size);
 
-    struct rgb_proof *deserialized_proof = rgb_as_ptr(
-            rgb_proof_deserialize(serialized_proof.ptr, serialized_proof.size));
+    struct rgb_proof *deserialized_proof = rgb_proof_deserialize(serialized_proof.ptr, serialized_proof.size);
 
     rgb_debug_print_proof(deserialized_proof);
 

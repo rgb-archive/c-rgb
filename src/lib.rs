@@ -29,6 +29,12 @@ pub struct CRgbAllocatedArray<T> {
 
 #[derive(Debug)]
 #[repr(C)]
+pub struct CRgbAllocatedPtr<T> {
+    pub ptr: Box<[T; 1]>,
+}
+
+#[derive(Debug)]
+#[repr(C)]
 pub enum CRgbNeededTx {
     // TODO: impl WrapperOf
     FromTXID(Sha256dHash, u32),

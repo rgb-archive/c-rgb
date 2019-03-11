@@ -32,7 +32,7 @@ int main() {
 
     rgb_debug_print_contract(&contract);
 
-    struct rgb_sha256d *asset_id = rgb_as_ptr(rgb_contract_get_asset_id(&contract));
+    struct rgb_sha256d *asset_id = rgb_contract_get_asset_id(&contract);
 
     printf("From Rust: ");
     fflush(stdout); // without this the order of prints would likely be messed up
@@ -60,8 +60,8 @@ int main() {
     printf("\n");
 
     // And deserialize it
-    struct rgb_contract *deserialized_contract = rgb_as_ptr(
-	    rgb_contract_deserialize(serialized_contract.ptr, serialized_contract.size));
+    struct rgb_contract *deserialized_contract = rgb_contract_deserialize(serialized_contract.ptr,
+									  serialized_contract.size);
 
     rgb_debug_print_contract(deserialized_contract);
 

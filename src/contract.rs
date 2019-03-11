@@ -11,9 +11,9 @@ use rgb::traits::NeededTx;
 use rgb::traits::Verify;
 
 use ::{CRgbAllocatedArray, libc};
+use ::{CRgbAllocatedPtr, CRgbNeededTx};
 use c_bitcoin::CRgbBitcoinNetwork;
 use c_bitcoin::CRgbOutPoint;
-use CRgbNeededTx;
 use generics::WrapperOf;
 
 //#[derive(Debug)]
@@ -61,9 +61,9 @@ impl WrapperOf<Contract> for CRgbContract {
 // Contracts
 
 #[no_mangle]
-pub extern "C" fn rgb_contract_get_asset_id(contract: &CRgbContract) -> CRgbAllocatedArray<Sha256dHash> {
-    CRgbAllocatedArray {
-        ptr: vec![contract.decode().get_asset_id()].into_boxed_slice()
+pub extern "C" fn rgb_contract_get_asset_id(contract: &CRgbContract) -> CRgbAllocatedPtr<Sha256dHash> {
+    CRgbAllocatedPtr {
+        ptr: Box::new([contract.decode().get_asset_id()])
     }
 }
 
@@ -112,7 +112,7 @@ pub extern "C" fn rgb_contract_serialize(contract: &CRgbContract) -> CRgbAllocat
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_contract_deserialize(buffer: *const u8, len: u32) -> CRgbAllocatedArray<CRgbContract> {
+pub extern "C" fn rgb_contract_deserialize(buffer: *const u8, len: u32) -> CRgbAllocatedPtr<CRgbContract> {
     use bitcoin::network::serialize::deserialize;
 
     let sized_slice = unsafe { slice::from_raw_parts(buffer, len as usize) };
@@ -121,8 +121,8 @@ pub extern "C" fn rgb_contract_deserialize(buffer: *const u8, len: u32) -> CRgbA
 
     let native_contract = deserialize(&encoded).unwrap();
 
-    CRgbAllocatedArray {
-        ptr: vec![CRgbContract::encode(&native_contract)].into_boxed_slice()
+    CRgbAllocatedPtr {
+        ptr: Box::new([CRgbContract::encode(&native_contract)])
     }
 }
 

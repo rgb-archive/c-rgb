@@ -20,8 +20,6 @@ struct rgb_sha256d {
 struct rgb_needed_tx_map {
 };
 
-#define rgb_as_ptr(x) (x).ptr
-
 #define _declare_rgb_allocated_array_internal(type, optional_struct)        \
         struct rgb_allocated_array_ ## type {                                \
             optional_struct type *ptr;                                        \
@@ -80,7 +78,7 @@ struct rgb_contract {
     uint32_t total_supply;
 };
 
-struct rgb_allocated_array_rgb_sha256d rgb_contract_get_asset_id(const struct rgb_contract *contract);
+struct rgb_sha256d *rgb_contract_get_asset_id(const struct rgb_contract *contract);
 
 struct rgb_allocated_array_rgb_needed_tx rgb_contract_get_needed_txs(const struct rgb_contract *contract);
 
@@ -88,11 +86,11 @@ struct rgb_allocated_array_uint8_t rgb_contract_get_expected_script(const struct
 
 struct rgb_allocated_array_uint8_t rgb_contract_serialize(const struct rgb_contract *contract);
 
-struct rgb_allocated_array_rgb_contract rgb_contract_deserialize(const uint8_t *buffer, uint32_t len);
+struct rgb_contract *rgb_contract_deserialize(const uint8_t *buffer, uint32_t len);
 
 uint8_t rgb_contract_verify(const struct rgb_contract *contract, const struct rgb_needed_tx_map *map);
 
-struct rgb_allocated_array_rgb_needed_tx_map rgb_init_needed_tx_map();
+struct rgb_needed_tx_map *rgb_init_needed_tx_map();
 
 void rgb_push_needed_tx_map(struct rgb_needed_tx_map *map, const struct rgb_needed_tx *key,
                             const struct rgb_bitcoin_serialized_tx *val);
@@ -117,11 +115,11 @@ struct rgb_allocated_array_uint8_t rgb_proof_get_expected_script(const struct rg
 
 struct rgb_allocated_array_uint8_t rgb_proof_serialize(const struct rgb_proof *proof);
 
-struct rgb_allocated_array_rgb_proof rgb_proof_deserialize(const uint8_t *buffer, uint32_t len);
+struct rgb_proof *rgb_proof_deserialize(const uint8_t *buffer, uint32_t len);
 
 uint8_t rgb_proof_verify(const struct rgb_proof *proof, const struct rgb_needed_tx_map *map);
 
-struct rgb_allocated_array_rgb_contract
+struct rgb_contract *
 rgb_proof_get_contract_for(const struct rgb_proof *proof, const struct rgb_sha256d *asset_id); // TODO!
 
 // Debug functions
