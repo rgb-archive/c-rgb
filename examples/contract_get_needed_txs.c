@@ -30,7 +30,6 @@ int main() {
 
     rgb_debug_print_contract(&contract);
 
-    // TODO: needed_txs should be freed
     struct rgb_allocated_array_rgb_needed_tx needed_txs = rgb_contract_get_needed_txs(&contract);
 
     printf("Number of elements: %lu\n", needed_txs.len);
@@ -52,6 +51,9 @@ int main() {
             return EXIT_FAILURE;
         }
     }
+
+    rgb_free_array(needed_txs,
+    struct rgb_allocated_array_rgb_needed_tx);
 
     return EXIT_SUCCESS;
 }

@@ -20,6 +20,13 @@ struct rgb_sha256d {
 struct rgb_needed_tx_map {
 };
 
+#define _typecheck(type, x) \
+({  type __rgb_free_typechecker; \
+    typeof(x) __dummy; \
+    (void)(&__rgb_free_typechecker == &__dummy); \
+    1; \
+})
+
 #define _declare_rgb_allocated_array_internal(type, optional_struct)        \
         struct rgb_allocated_array_ ## type {                                \
             optional_struct type *ptr;                                        \
@@ -40,6 +47,13 @@ declare_rgb_allocated_array_struct(rgb_needed_tx)
 declare_rgb_allocated_array_struct(rgb_needed_tx_map)
 declare_rgb_allocated_array_struct(rgb_sha256d)
 declare_rgb_allocated_array_native(uint8_t)
+
+void _rgb_free_internal_struct(void *ptr, char *type);
+
+void _rgb_free_internal_array(void *ptr, char *type);
+
+#define rgb_free(ptr, type) (_typecheck(type, *ptr), _rgb_free_internal_struct(ptr, #type))
+#define rgb_free_array(arr, type) (_typecheck(type, arr), _rgb_free_internal_array(&arr, #type))
 
 struct rgb_bitcoin_outpoint {
     struct rgb_sha256d txid;

@@ -65,5 +65,14 @@ int main() {
 
     rgb_debug_print_contract(deserialized_contract);
 
+    rgb_free(asset_id,
+    struct rgb_sha256d);
+    rgb_free(deserialized_contract,
+    struct rgb_contract);
+    rgb_free_array(script,
+    struct rgb_allocated_array_uint8_t);
+    rgb_free_array(serialized_contract,
+    struct rgb_allocated_array_uint8_t);
+
     return EXIT_SUCCESS;
 }

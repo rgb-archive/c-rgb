@@ -20,6 +20,7 @@ pub mod c_bitcoin;
 pub mod contract;
 pub mod proof;
 pub mod needed_txs_map;
+pub mod free;
 
 #[derive(Debug)]
 #[repr(C)]

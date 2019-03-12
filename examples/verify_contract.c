@@ -65,5 +65,8 @@ int main() {
 
     printf("Verification result: %u\n", result);
 
+    rgb_free(map,
+    struct rgb_needed_tx_map);
+
     return EXIT_SUCCESS;
 }

@@ -55,5 +55,12 @@ int main() {
 
     rgb_debug_print_proof(deserialized_proof);
 
+    rgb_free(asset_id,
+    struct rgb_sha256d);
+    rgb_free(deserialized_proof,
+    struct rgb_proof);
+    rgb_free_array(serialized_proof,
+    struct rgb_allocated_array_uint8_t);
+
     return EXIT_SUCCESS;
 }
