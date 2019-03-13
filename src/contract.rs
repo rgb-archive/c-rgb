@@ -15,6 +15,7 @@ use ::{CRgbAllocatedPtr, CRgbNeededTx};
 use c_bitcoin::CRgbBitcoinNetwork;
 use c_bitcoin::CRgbOutPoint;
 use generics::WrapperOf;
+use hashmap::CRgbHashMap;
 
 //#[derive(Debug)]
 #[repr(C)]
@@ -127,12 +128,12 @@ pub extern "C" fn rgb_contract_deserialize(buffer: *const u8, len: u32) -> CRgbA
 }
 
 #[no_mangle]
-pub extern "C" fn rgb_contract_verify(contract: &CRgbContract, crgb_needed_txs: &HashMap<NeededTx, Transaction>) -> u8 {
+pub extern "C" fn rgb_contract_verify(contract: &CRgbContract, crgb_needed_txs: &CRgbHashMap<NeededTx, Transaction>) -> u8 {
     let mut usable_map = HashMap::new();
 
     // little hack: verify() wants a HashMap<&NeededTx, Transaction>
     //                                      ^^^
-    for (key, val) in crgb_needed_txs {
+    for (key, val) in crgb_needed_txs.decode() {
         usable_map.insert(key, val.clone());
     }
 
