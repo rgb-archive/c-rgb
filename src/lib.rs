@@ -21,6 +21,7 @@ pub mod contract;
 pub mod proof;
 pub mod needed_txs_map;
 pub mod hashmap;
+pub mod vec;
 pub mod free;
 
 #[derive(Debug)]
