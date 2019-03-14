@@ -184,4 +184,11 @@ void rgb_debug_print_bitcoin_address(const struct rgb_bitcoin_address *address);
 
 void rgb_debug_print_kaleidoscope_outpoint(const struct rgb_kaleidoscope_outpoint *outpoint);
 
+// Bifrost
+
+uint8_t rgb_bifrost_upload_proofs(const char *server, const struct rgb_proof *proof, const struct rgb_sha256d txid);
+
+struct rgb_allocated_array_rgb_proof
+rgb_bifrost_get_proofs_for(const char *server, const struct rgb_bitcoin_outpoint *outpoint);
+
 #endif
