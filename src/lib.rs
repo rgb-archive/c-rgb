@@ -4,8 +4,6 @@ extern crate bitcoin;
 extern crate libc;
 extern crate rgb;
 
-use std::slice;
-
 use bitcoin::Transaction;
 use bitcoin::util::hash::Sha256dHash;
 use rgb::traits::NeededTx;
