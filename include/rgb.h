@@ -147,4 +147,41 @@ void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
 
 void rgb_debug_print_proof(const struct rgb_proof *proof);
 
+// Kaleidoscope
+
+struct rgb_bitcoin_address {
+    char str[40];
+};
+
+struct rgb_proof_tx_pair {
+    struct rgb_proof *proof;
+    struct rgb_allocated_array_uint8_t serialized_tx;
+};
+
+struct rgb_kaleidoscope_outpoint {
+    struct rgb_bitcoin_address *bitcoin_address;
+    uint64_t bitcoin_amount;
+    struct rgb_kaleidoscope_outpoint_map *rgb_outputs;
+};
+
+typedef void rgb_kaleidoscope_outpoint_map;
+
+struct rgb_kaleidoscope_outpoint_map *rgb_init_kaleidoscope_outpoint_map();
+
+void rgb_push_kaleidoscope_outpoint_map(struct rgb_kaleidoscope_outpoint_map *map, struct rgb_sha256d asset_id,
+					uint32_t amount);
+
+struct rgb_proof_tx_pair rgb_kaleidoscope_spend_proofs(
+	uint32_t input_proofs_count,
+	const struct rgb_proof input_proofs[],
+	uint32_t bitcoin_input_count,
+	const struct rgb_bitcoin_outpoint bitcoin_inputs[],
+	uint32_t output_count,
+	const struct rgb_kaleidoscope_outpoint outputs[]
+);
+
+void rgb_debug_print_bitcoin_address(const struct rgb_bitcoin_address *address);
+
+void rgb_debug_print_kaleidoscope_outpoint(const struct rgb_kaleidoscope_outpoint *outpoint);
+
 #endif

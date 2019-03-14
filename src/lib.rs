@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 extern crate bitcoin;
+extern crate core;
 extern crate libc;
 extern crate rgb;
 
@@ -33,6 +34,19 @@ pub struct CRgbAllocatedArray<T> {
 pub struct CRgbAllocatedPtr<T> {
     pub ptr: Box<[T; 1]>,
 }
+
+impl<T> CRgbAllocatedPtr<T> {
+    pub fn new(obj: T) -> CRgbAllocatedPtr<T> {
+        CRgbAllocatedPtr {
+            ptr: Box::new([obj])
+        }
+    }
+}
+
+#[cfg(feature = "with-kaleidoscope")]
+pub mod kaleidoscope;
+#[cfg(feature = "with-bifrost")]
+pub mod bifrost;
 
 #[derive(Debug)]
 #[repr(C)]

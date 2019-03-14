@@ -21,6 +21,14 @@ impl<K: 'static + Eq + Hash, V: 'static> CRgbHashMap<K, V> {
         }
     }
 
+    pub fn from_native(map: HashMap<K, V>) -> CRgbHashMap<K, V> {
+        CRgbHashMap {
+            map: Box::new(map),
+            _k_type: TypeId::of::<K>(),
+            _v_type: TypeId::of::<V>(),
+        }
+    }
+
     pub fn type_check(&self) -> bool {
         self._k_type == TypeId::of::<K>() && self._v_type == TypeId::of::<V>()
     }
