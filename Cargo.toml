@@ -11,8 +11,8 @@ with-bifrost = ["bifrost"]
 bitcoin = "~0.14.2"
 rgb = { git = "https://github.com/rgb-org/rgb.git", rev = "1a626e1edd61bf5bc836b8fac5469e4e0d6c3426" }
 libc = "~0.2.45"
-kaleidoscope = { git = "https://github.com/afilini/kaleidoscope.git", branch = "libkaleidoscope", optional = true }
-bifrost = { git = "https://github.com/afilini/bifrost.git", branch = "libbifrost", optional = true }
+kaleidoscope = { git = "https://github.com/rgb-org/kaleidoscope.git", rev = "dba2cdd3613db6c8f8c860c50e8b4865d8d96f86", optional = true }
+bifrost = { git = "https://github.com/rgb-org/bifrost.git", rev = "cd158b1be7c9372c8059d6dd946ee710b24da223", optional = true }
 
 [lib]
 name = "rgb"
