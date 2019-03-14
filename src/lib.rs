@@ -61,19 +61,13 @@ impl CRgbNeededTx {
     }
 }
 
-#[derive(Debug)]
-#[repr(C)]
-pub struct CRgbSerializedTx {
-    pub size: u32,
-    pub payload: *const u8,
-}
+type CRgbSerializedTx = CRgbAllocatedArray<u8>;
 
 impl WrapperOf<Transaction> for CRgbSerializedTx {
     fn decode(&self) -> Transaction {
         use bitcoin::network::serialize::deserialize;
 
-        let sized_slice = unsafe { slice::from_raw_parts(self.payload, self.size as usize) };
-        let native_tx: Transaction = deserialize(&sized_slice).unwrap();
+        let native_tx: Transaction = deserialize(&self.ptr).unwrap();
 
         native_tx
     }

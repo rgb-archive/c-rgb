@@ -77,10 +77,7 @@ struct rgb_output_entry {
     uint32_t vout;
 };
 
-struct rgb_bitcoin_serialized_tx {
-    uint32_t size;
-    uint8_t *payload;
-};
+typedef struct rgb_allocated_array_uint8_t rgb_bitcoin_serialized_tx;
 
 // Contracts
 
@@ -107,7 +104,7 @@ uint8_t rgb_contract_verify(const struct rgb_contract *contract, const struct rg
 struct rgb_needed_tx_map *rgb_init_needed_tx_map();
 
 void rgb_push_needed_tx_map(struct rgb_needed_tx_map *map, const struct rgb_needed_tx *key,
-                            const struct rgb_bitcoin_serialized_tx *val);
+			    const rgb_bitcoin_serialized_tx *val);
 
 // Proofs
 
@@ -144,7 +141,7 @@ void rgb_debug_print_contract(const struct rgb_contract *contract);
 
 void rgb_debug_print_needed_tx(const struct rgb_needed_tx *e);
 
-void rgb_debug_print_serialized_tx(const struct rgb_bitcoin_serialized_tx *tx);
+void rgb_debug_print_serialized_tx(const rgb_bitcoin_serialized_tx *tx);
 
 void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
 
