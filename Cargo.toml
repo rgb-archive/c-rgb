@@ -3,10 +3,16 @@ name = "c-rgb"
 version = "0.1.0"
 authors = ["Alekos Filini <alekos.filini@gmail.com>"]
 
+[features]
+with-kaleidoscope = ["kaleidoscope"]
+with-bifrost = ["bifrost"]
+
 [dependencies]
 bitcoin = "~0.14.2"
 rgb = { git = "https://github.com/rgb-org/rgb.git", rev = "1a626e1edd61bf5bc836b8fac5469e4e0d6c3426" }
 libc = "~0.2.45"
+kaleidoscope = { git = "https://github.com/afilini/kaleidoscope.git", branch = "libkaleidoscope", optional = true }
+bifrost = { git = "https://github.com/afilini/bifrost.git", branch = "libbifrost", optional = true }
 
 [lib]
 name = "rgb"
