@@ -101,7 +101,7 @@ struct rgb_contract *rgb_contract_deserialize(const uint8_t *buffer, uint32_t le
 
 uint8_t rgb_contract_verify(const struct rgb_contract *contract, const struct rgb_needed_tx_map *map);
 
-struct rgb_needed_tx_map *rgb_init_needed_tx_map();
+struct rgb_needed_tx_map *rgb_init_needed_tx_map(void);
 
 void rgb_push_needed_tx_map(struct rgb_needed_tx_map *map, const struct rgb_needed_tx *key,
 			    const rgb_bitcoin_serialized_tx *val);
@@ -166,7 +166,7 @@ struct rgb_kaleidoscope_outpoint {
 
 typedef void rgb_kaleidoscope_outpoint_map;
 
-struct rgb_kaleidoscope_outpoint_map *rgb_init_kaleidoscope_outpoint_map();
+struct rgb_kaleidoscope_outpoint_map *rgb_init_kaleidoscope_outpoint_map(void);
 
 void rgb_push_kaleidoscope_outpoint_map(struct rgb_kaleidoscope_outpoint_map *map, struct rgb_sha256d asset_id,
 					uint32_t amount);
