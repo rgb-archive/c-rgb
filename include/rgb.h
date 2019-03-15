@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 static const uint32_t RGB_NETWORK_MAINNET = 0;
 static const uint32_t RGB_NETWORK_TESTNET = 1;
 static const uint32_t RGB_NETWORK_REGTEST = 2;
@@ -149,5 +153,9 @@ void rgb_debug_print_serialized_tx(const struct rgb_bitcoin_serialized_tx *tx);
 void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
 
 void rgb_debug_print_proof(const struct rgb_proof *proof);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
