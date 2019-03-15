@@ -2,7 +2,8 @@
 
 set -e
 
-CONFIG_VAR_FILE=config.vars
+MYDIR="$(dirname "$(realpath "$0")")"
+CONFIG_VAR_FILE=${MYDIR}/config.vars
 
 WITH_KALEIDOSCOPE=0
 WITH_BIFROST=0
