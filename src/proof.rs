@@ -1,19 +1,22 @@
+use std::collections::HashMap;
 use std::mem;
 use std::os::raw::c_uchar;
 use std::ptr;
 use std::slice;
 
+use bitcoin::Transaction;
 use bitcoin::util::hash::Sha256dHash;
 use rgb::contract::Contract;
 use rgb::output_entry::OutputEntry;
 use rgb::proof::Proof;
-use rgb::traits::Verify;
+use rgb::traits::{NeededTx, Verify};
 
 use ::{CRgbAllocatedArray, CRgbNeededTx};
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
 use CRgbAllocatedPtr;
 use generics::WrapperOf;
+use hashmap::CRgbHashMap;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -213,5 +216,21 @@ pub extern "C" fn rgb_proof_deserialize(buffer: *const c_uchar, len: u32) -> CRg
 
     CRgbAllocatedPtr {
         ptr: Box::new([CRgbProof::encode(&native_proof)])
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn rgb_proof_verify(proof: &CRgbProof, crgb_needed_txs: &CRgbHashMap<NeededTx, Transaction>) -> u8 {
+    let mut usable_map = HashMap::new();
+
+    // little hack: verify() wants a HashMap<&NeededTx, Transaction>
+    //                                      ^^^
+    for (key, val) in crgb_needed_txs.decode() {
+        usable_map.insert(key, val.clone());
+    }
+
+    match proof.decode().verify(&usable_map) {
+        true => 1,
+        false => 0
     }
 }
