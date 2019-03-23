@@ -8,7 +8,6 @@ extern "C"{
 extern void HexToBin (const char * theString, unsigned char * bytes, const int invert);
 extern void print_hex(const void *p, size_t len);
 
-
 #ifdef __cplusplus
 }
 #endif
