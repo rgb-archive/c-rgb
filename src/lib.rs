@@ -4,20 +4,35 @@ extern crate bitcoin;
 extern crate libc;
 extern crate rgb;
 
+use std::slice;
+
 use bitcoin::Transaction;
 use bitcoin::util::hash::Sha256dHash;
+use rgb::traits::NeededTx;
+
 use c_bitcoin::CRgbOutPoint;
 use contract::CRgbContract;
 use generics::WrapperOf;
 use proof::CRgbProof;
-use rgb::traits::NeededTx;
-use std::slice;
 
 pub mod generics;
 pub mod c_bitcoin;
 pub mod contract;
 pub mod proof;
 pub mod needed_txs_map;
+pub mod free;
+
+#[derive(Debug)]
+#[repr(C)]
+pub struct CRgbAllocatedArray<T> {
+    pub ptr: Box<[T]>,
+}
+
+#[derive(Debug)]
+#[repr(C)]
+pub struct CRgbAllocatedPtr<T> {
+    pub ptr: Box<[T; 1]>,
+}
 
 #[derive(Debug)]
 #[repr(C)]
