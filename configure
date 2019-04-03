@@ -7,6 +7,7 @@ CONFIG_VAR_FILE=${MYDIR}/config.vars
 
 WITH_KALEIDOSCOPE=0
 WITH_BIFROST=0
+ECHO=/bin/echo
 
 usage_with_default()
 {
@@ -19,30 +20,30 @@ usage_with_default()
     else
 	DEF=$2
     fi
-    echo "  $1 (default $DEF)"
+    ECHO "  $1 (default $DEF)"
 }
 
 usage()
 {
-    echo "Usage: ./configure [setting=value] [options]"
+    ECHO "Usage: ./configure [setting=value] [options]"
 
-    echo ""
-    echo "Options include:"
+    ECHO ""
+    ECHO "Options include:"
     usage_with_default "--enable/disable-kaleidoscope" "WITH_KALEIDOSCOPE" "enable" "disable"
-    echo "    Add libkaleidoscope that contains some utilities to build transactions"
+    ECHO "    Add libkaleidoscope that contains some utilities to build transactions"
     usage_with_default "--enable/disable-bifrost" "WITH_BIFROST" "enable" "disable"
-    echo "    Add libbifrost, an implementation of a Bifrost client"
-    exit 1
+    ECHO "    Add libbifrost, an implementation of a Bifrost client"
+    ECHO 1
 }
 
 add_var()
 {
     if [ -n "$2" ]; then
-        echo "Setting $1... $2"
+        ECHO "Setting $1... $2"
     else
-        echo "$1 not found"
+        ECHO "$1 not found"
     fi
-    echo "$1=$2" >> $CONFIG_VAR_FILE
+    ECHO "$1=$2" >> $CONFIG_VAR_FILE
     [ -z "$3" ] || echo "#define $1 $2" >> "$3"
 }
 
@@ -55,14 +56,14 @@ for opt in "$@"; do
 
 	--help|-h) usage;;
 	*)
-	    echo "Unknown option '$opt'" >&2
+	    ECHO "Unknown option '$opt'" >&2
 	    usage
 	    ;;
     esac
 done
 
 # Empty file, overwrite if already present
-echo -n > $CONFIG_VAR_FILE
+ECHO -n > $CONFIG_VAR_FILE
 
 add_var WITH_KALEIDOSCOPE "$WITH_KALEIDOSCOPE"
 add_var WITH_BIFROST "$WITH_BIFROST"
