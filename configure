@@ -5,8 +5,8 @@ set -e
 MYDIR="$(dirname "$(realpath "$0")")"
 CONFIG_VAR_FILE=${MYDIR}/config.vars
 
-WITH_KALEIDOSCOPE=0
-WITH_BIFROST=0
+WITH_KALEIDOSCOPE=1
+WITH_BIFROST=1
 ECHO=/bin/echo
 
 usage_with_default()
@@ -29,9 +29,9 @@ usage()
 
     ECHO ""
     ECHO "Options include:"
-    usage_with_default "--enable/disable-kaleidoscope" "WITH_KALEIDOSCOPE" "enable" "disable"
+    usage_with_default "--enable/disable-kaleidoscope" "WITH_KALEIDOSCOPE" "enable" "enable"
     ECHO "    Add libkaleidoscope that contains some utilities to build transactions"
-    usage_with_default "--enable/disable-bifrost" "WITH_BIFROST" "enable" "disable"
+    usage_with_default "--enable/disable-bifrost" "WITH_BIFROST" "enable" "enable"
     ECHO "    Add libbifrost, an implementation of a Bifrost client"
     ECHO 1
 }
