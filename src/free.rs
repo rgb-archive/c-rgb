@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::ffi::CStr;
 use std::ptr;
 
@@ -9,6 +8,7 @@ use rgb::traits::NeededTx;
 use ::{CRgbNeededTx, libc};
 use contract::CRgbContract;
 use CRgbAllocatedArray;
+use hashmap::CRgbHashMap;
 use proof::CRgbProof;
 
 unsafe fn rust_drop_ptr<T>(ptr: *mut libc::c_void) {
@@ -27,7 +27,7 @@ pub unsafe extern "C" fn _rgb_free_internal_struct(ptr: *mut libc::c_void, type_
         "struct rgb_contract" => rust_drop_ptr::<CRgbContract>(ptr),
         "struct rgb_proof" => rust_drop_ptr::<CRgbProof>(ptr),
         "struct rgb_needed_tx" => rust_drop_ptr::<CRgbNeededTx>(ptr),
-        "struct rgb_needed_tx_map" => rust_drop_ptr::<HashMap<NeededTx, Transaction>>(ptr),
+        "struct rgb_needed_tx_map" => rust_drop_ptr::<CRgbHashMap<NeededTx, Transaction>>(ptr),
         "struct rgb_sha256d" => rust_drop_ptr::<Sha256dHash>(ptr),
 
         _ => panic!("Could not drop unknown type {:?}", type_str),
@@ -42,7 +42,7 @@ pub unsafe extern "C" fn _rgb_free_internal_array(arr: *mut libc::c_void, type_s
         "struct rgb_allocated_array_rgb_contract" => rust_drop_array::<CRgbContract>(arr),
         "struct rgb_allocated_array_rgb_proof" => rust_drop_array::<CRgbProof>(arr),
         "struct rgb_allocated_array_rgb_needed_tx" => rust_drop_array::<CRgbNeededTx>(arr),
-        "struct rgb_allocated_array_rgb_needed_tx_map" => rust_drop_array::<HashMap<NeededTx, Transaction>>(arr),
+        "struct rgb_allocated_array_rgb_needed_tx_map" => rust_drop_array::<CRgbHashMap<NeededTx, Transaction>>(arr),
         "struct rgb_allocated_array_rgb_sha256d" => rust_drop_array::<Sha256dHash>(arr),
         "struct rgb_allocated_array_uint8_t" => rust_drop_array::<u8>(arr),
 

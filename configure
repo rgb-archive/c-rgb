@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -e
+
+MYDIR="$(dirname "$(realpath "$0")")"
+CONFIG_VAR_FILE=${MYDIR}/config.vars
+
+WITH_KALEIDOSCOPE=0
+WITH_BIFROST=0
+
+usage_with_default()
+{
+    if [ $# = 4 ]; then
+	if [ "$2" = 1 ]; then
+	    DEF=$3
+	else
+	    DEF=$4
+	fi
+    else
+	DEF=$2
+    fi
+    echo "  $1 (default $DEF)"
+}
+
+usage()
+{
+    echo "Usage: ./configure [setting=value] [options]"
+
+    echo ""
+    echo "Options include:"
+    usage_with_default "--enable/disable-kaleidoscope" "WITH_KALEIDOSCOPE" "enable" "disable"
+    echo "    Add libkaleidoscope that contains some utilities to build transactions"
+    usage_with_default "--enable/disable-bifrost" "WITH_BIFROST" "enable" "disable"
+    echo "    Add libbifrost, an implementation of a Bifrost client"
+    exit 1
+}
+
+add_var()
+{
+    if [ -n "$2" ]; then
+        echo "Setting $1... $2"
+    else
+        echo "$1 not found"
+    fi
+    echo "$1=$2" >> $CONFIG_VAR_FILE
+    [ -z "$3" ] || echo "#define $1 $2" >> "$3"
+}
+
+for opt in "$@"; do
+    case "$opt" in
+	--enable-kaleidoscope) WITH_KALEIDOSCOPE=1;;
+	--disable-kaleidoscope) WITH_KALEIDOSCOPE=0;;
+	--enable-bifrost) WITH_BIFROST=1;;
+	--disable-bifrost) WITH_BIFROST=0;;
+
+	--help|-h) usage;;
+	*)
+	    echo "Unknown option '$opt'" >&2
+	    usage
+	    ;;
+    esac
+done
+
+# Empty file, overwrite if already present
+echo -n > $CONFIG_VAR_FILE
+
+add_var WITH_KALEIDOSCOPE "$WITH_KALEIDOSCOPE"
+add_var WITH_BIFROST "$WITH_BIFROST"

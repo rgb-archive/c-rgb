@@ -1,10 +1,9 @@
 #![allow(dead_code)]
 
 extern crate bitcoin;
+extern crate core;
 extern crate libc;
 extern crate rgb;
-
-use std::slice;
 
 use bitcoin::Transaction;
 use bitcoin::util::hash::Sha256dHash;
@@ -20,6 +19,8 @@ pub mod c_bitcoin;
 pub mod contract;
 pub mod proof;
 pub mod needed_txs_map;
+pub mod hashmap;
+pub mod vec;
 pub mod free;
 
 #[derive(Debug)]
@@ -33,6 +34,19 @@ pub struct CRgbAllocatedArray<T> {
 pub struct CRgbAllocatedPtr<T> {
     pub ptr: Box<[T; 1]>,
 }
+
+impl<T> CRgbAllocatedPtr<T> {
+    pub fn new(obj: T) -> CRgbAllocatedPtr<T> {
+        CRgbAllocatedPtr {
+            ptr: Box::new([obj])
+        }
+    }
+}
+
+#[cfg(feature = "with-kaleidoscope")]
+pub mod kaleidoscope;
+#[cfg(feature = "with-bifrost")]
+pub mod bifrost;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -59,19 +73,13 @@ impl CRgbNeededTx {
     }
 }
 
-#[derive(Debug)]
-#[repr(C)]
-pub struct CRgbSerializedTx {
-    pub size: u32,
-    pub payload: *const u8,
-}
+type CRgbSerializedTx = CRgbAllocatedArray<u8>;
 
 impl WrapperOf<Transaction> for CRgbSerializedTx {
     fn decode(&self) -> Transaction {
         use bitcoin::network::serialize::deserialize;
 
-        let sized_slice = unsafe { slice::from_raw_parts(self.payload, self.size as usize) };
-        let native_tx: Transaction = deserialize(&sized_slice).unwrap();
+        let native_tx: Transaction = deserialize(&self.ptr).unwrap();
 
         native_tx
     }

@@ -77,10 +77,7 @@ struct rgb_output_entry {
     uint32_t vout;
 };
 
-struct rgb_bitcoin_serialized_tx {
-    uint32_t size;
-    uint8_t *payload;
-};
+typedef struct rgb_allocated_array_uint8_t rgb_bitcoin_serialized_tx;
 
 // Contracts
 
@@ -104,10 +101,10 @@ struct rgb_contract *rgb_contract_deserialize(const uint8_t *buffer, uint32_t le
 
 uint8_t rgb_contract_verify(const struct rgb_contract *contract, const struct rgb_needed_tx_map *map);
 
-struct rgb_needed_tx_map *rgb_init_needed_tx_map();
+struct rgb_needed_tx_map *rgb_init_needed_tx_map(void);
 
 void rgb_push_needed_tx_map(struct rgb_needed_tx_map *map, const struct rgb_needed_tx *key,
-                            const struct rgb_bitcoin_serialized_tx *val);
+			    const rgb_bitcoin_serialized_tx *val);
 
 // Proofs
 
@@ -144,10 +141,54 @@ void rgb_debug_print_contract(const struct rgb_contract *contract);
 
 void rgb_debug_print_needed_tx(const struct rgb_needed_tx *e);
 
-void rgb_debug_print_serialized_tx(const struct rgb_bitcoin_serialized_tx *tx);
+void rgb_debug_print_serialized_tx(const rgb_bitcoin_serialized_tx *tx);
 
 void rgb_debug_print_needed_tx_map(const struct rgb_needed_tx_map *map);
 
 void rgb_debug_print_proof(const struct rgb_proof *proof);
+
+// Kaleidoscope
+
+struct rgb_bitcoin_address {
+    char str[40];
+};
+
+struct rgb_proof_tx_pair {
+    struct rgb_proof *proof;
+    struct rgb_allocated_array_uint8_t serialized_tx;
+};
+
+struct rgb_kaleidoscope_outpoint {
+    struct rgb_bitcoin_address *bitcoin_address;
+    uint64_t bitcoin_amount;
+    struct rgb_kaleidoscope_outpoint_map *rgb_outputs;
+};
+
+typedef void rgb_kaleidoscope_outpoint_map;
+
+struct rgb_kaleidoscope_outpoint_map *rgb_init_kaleidoscope_outpoint_map(void);
+
+void rgb_push_kaleidoscope_outpoint_map(struct rgb_kaleidoscope_outpoint_map *map, struct rgb_sha256d asset_id,
+					uint32_t amount);
+
+struct rgb_proof_tx_pair rgb_kaleidoscope_spend_proofs(
+	uint32_t input_proofs_count,
+	const struct rgb_proof input_proofs[],
+	uint32_t bitcoin_input_count,
+	const struct rgb_bitcoin_outpoint bitcoin_inputs[],
+	uint32_t output_count,
+	const struct rgb_kaleidoscope_outpoint outputs[]
+);
+
+void rgb_debug_print_bitcoin_address(const struct rgb_bitcoin_address *address);
+
+void rgb_debug_print_kaleidoscope_outpoint(const struct rgb_kaleidoscope_outpoint *outpoint);
+
+// Bifrost
+
+uint8_t rgb_bifrost_upload_proofs(const char *server, const struct rgb_proof *proof, const struct rgb_sha256d txid);
+
+struct rgb_allocated_array_rgb_proof
+rgb_bifrost_get_proofs_for(const char *server, const struct rgb_bitcoin_outpoint *outpoint);
 
 #endif
