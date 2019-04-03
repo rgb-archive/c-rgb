@@ -24,9 +24,11 @@ if we realize that there are best ways to do it. We don't consider these APIs to
 like everything to follow the first rule (allocate the memory in the C side), but this looks kinda complicated in some
 cases.
 
-## Runing the examples
+## Build and running the examples
+* `./configure`
+* `make`
 
-Simply run `make`: this will build the Rust layer first, and then some binaries in the `examples/build/*` folder that can be run to demonstrate
+This will build the Rust layer first, and then some binaries in the `examples/build/*` folder that can be run to demonstrate
 some features of this library.
 
 These examples are statically-linked so that they can be run without either installing the shared
