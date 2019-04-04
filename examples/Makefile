@@ -1,6 +1,7 @@
 SRCS = $(wildcard *.c)
 BUILDDIR = ./build
 BINARIES = $(SRCS:%.c=${BUILDDIR}/%)
+-include ../config.vars
 
 .PHONY: clean
 
@@ -8,7 +9,8 @@ MKDIR_P = mkdir -p
 CC := gcc
 
 LDFLAGS := -L../target/debug/
-CFLAGS := -g -static -lrgb -lpthread -ldl -lm -Wall -Wextra -I../include/
+
+CFLAGS := -g $(STATIC) -lrgb -lpthread -ldl -lm -Wall -Wextra -I../include/
 
 all: dir $(BINARIES)
 

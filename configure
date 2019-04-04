@@ -9,6 +9,15 @@ WITH_KALEIDOSCOPE=1
 WITH_BIFROST=1
 ECHO=/bin/echo
 
+OS=$(uname)
+
+if [ $OS == "Darwin" ];
+then
+	STATIC=""
+else
+	STATIC="-static"
+fi
+
 usage_with_default()
 {
     if [ $# = 4 ]; then
@@ -67,3 +76,9 @@ $ECHO -n > $CONFIG_VAR_FILE
 
 add_var WITH_KALEIDOSCOPE "$WITH_KALEIDOSCOPE"
 add_var WITH_BIFROST "$WITH_BIFROST"
+
+if [ -n "$STATIC" ];
+then
+	add_var STATIC "$STATIC"
+fi
+
