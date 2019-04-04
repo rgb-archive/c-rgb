@@ -56,12 +56,12 @@ $ ./bitcoin-cli -datadir=/Users/isghe/.bitcoin_regtest getrawtransaction 926161d
     */
     const char * hex = "010000000146792d3ee6dbd89d429b293b12e809a3a091c3140c52fc8ed9cf8ec23d1a95e9000000004847304402205d68b44e42b47a7cc3b4800d100e1a99549bfa30ca0d1277490054c696e0f62002204eff912bb8841c5705ba6d4c95f3d757c6dab9fcd82d5f378ab6d95c7cfba07f01000000000248e6052a0100000017a9148f7cc036b8b011b8343f685cd19f7456950316c2870000000000000000226a20dfa7d82833ba808012d637e507bca5b00c01218975be05b8770fe7008065d04500000000";
     const size_t hex_length = strlen (hex);
-    struct rgb_bitcoin_serialized_tx tx = {
+    rgb_bitcoin_serialized_tx tx = {
             .size = (hex_length / 2),
-            .payload = (uint8_t *) malloc(hex_length / 2)
+            .ptr = (uint8_t *) malloc(hex_length / 2)
     };
 
-	HexToBin(hex, tx.payload, 0);
+	HexToBin(hex, tx.ptr, 0);
 
     const struct rgb_needed_tx need = {
             .type = RGB_NEEDED_TX_SPENDS_OUTPOINT,
@@ -77,8 +77,8 @@ $ ./bitcoin-cli -datadir=/Users/isghe/.bitcoin_regtest getrawtransaction 926161d
 
     rgb_free(map,
     struct rgb_needed_tx_map);
-	free (tx.payload);
-	tx.payload = NULL;
+	free (tx.ptr);
+	tx.ptr = NULL;
 	tx.size = 0;
     return EXIT_SUCCESS;
 }
