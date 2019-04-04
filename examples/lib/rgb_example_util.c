@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <assert.h>
  
 #include "rgb_example_util.h"
