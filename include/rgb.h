@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 static const uint32_t RGB_NETWORK_MAINNET = 0;
 static const uint32_t RGB_NETWORK_TESTNET = 1;
 static const uint32_t RGB_NETWORK_REGTEST = 2;
@@ -190,5 +194,9 @@ uint8_t rgb_bifrost_upload_proofs(const char *server, const struct rgb_proof *pr
 
 struct rgb_allocated_array_rgb_proof
 rgb_bifrost_get_proofs_for(const char *server, const struct rgb_bitcoin_outpoint *outpoint);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
